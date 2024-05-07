@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Interview backend - REST
+  description: REST api endpoint for the interview task
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /metrics:
+    get:
+      parameters:
+        - in: query
+          name: filter
+          required: true
+          schema:
+            $ref: '#/components/schemas/Filter'
+          description: Base64 encoded filter object
+      description: New endpoint
+      responses:
+        200:
+          description: map of metrics based on the given filter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cpu:
+                    type: array
+                    required: false
+                    items:
+                      $ref: '#/components/schemas/Metric'
+                  ram:
+                    type: array
+                    required: false
+                    items:
+                      $ref: '#/components/schemas/Metric'
+components:
+  schemas:
+    Metric:
+      properties:
+        unit:
+          type: string
+        value:
+          type: integer
+        total:
+          type: integer
+        time:
+          type: string
+        component:
+          $ref: '#/components/schemas/Component'
+      required:
+        - unit
+        - value
+        - time
+        - component
+    Filter:
+      format: base64
+      properties:
+        date:
+          type: string
+          description: iso string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
+    Component:
+      type: string
+      enum: ['all', 'cpu', 'ram']

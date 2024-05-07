@@ -1,0 +1,46 @@
+asyncapi: 3.0.0
+info:
+  title: Interview backend - WS
+  description: Websocket endpoint for the interview task. By default the server will sent a new metric every 60s.
+  version: 1.0.0
+channels:
+  metrics:
+    messages:
+      NewMetricEvent:
+        payload:
+          type: object
+          properties:
+            event_time:
+              type: string
+              description: iso string
+              example: "2024-05-02T14:41:01.000277664+02:00"
+            event_type:
+              type: string
+              enum: ['new_metric']
+            data:
+              type: object
+              properties:
+                unit:
+                  type: string
+                  example: celsius
+                value:
+                  type: integer
+                total:
+                  type: integer
+                time:
+                  type: string
+                  description: iso string
+                  example: "2024-05-02T14:41:01.000277664+02:00"
+                component:
+                  type: string
+                  enum: [ 'all', 'cpu', 'ram' ]
+              required:
+                - unit
+                - value
+                - time
+                - component
+operations:
+  NewMetricEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/metrics'
